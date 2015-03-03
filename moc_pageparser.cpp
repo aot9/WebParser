@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'pageparser.h'
 **
-** Created: Tue Mar 3 12:27:11 2015
+** Created: Tue Mar 3 15:46:50 2015
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.1)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -37,7 +37,7 @@ static const uint qt_meta_data_PageParser[] = {
 };
 
 static const char qt_meta_stringdata_PageParser[] = {
-    "PageParser\0\0reply\0replyFinished(QNetworkReply*)\0"
+    "PageParser\0\0reply\0processReply(QNetworkReply*)\0"
 };
 
 void PageParser::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
@@ -46,7 +46,7 @@ void PageParser::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         Q_ASSERT(staticMetaObject.cast(_o));
         PageParser *_t = static_cast<PageParser *>(_o);
         switch (_id) {
-        case 0: _t->replyFinished((*reinterpret_cast< QNetworkReply*(*)>(_a[1]))); break;
+        case 0: _t->processReply((*reinterpret_cast< QNetworkReply*(*)>(_a[1]))); break;
         default: ;
         }
     }

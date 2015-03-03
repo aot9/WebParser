@@ -15,7 +15,7 @@ public:
 signals:
     
 public slots:
-    void replyFinished(QNetworkReply* reply);
+    void processReply(QNetworkReply* reply);
     
 };
 

@@ -1,34 +1,35 @@
 #include "pageparser.h"
 #include <iostream>
 #include <QDebug>
-
+#include <QRegExp>
+#include <QStringList>
 
 PageParser::PageParser(QObject *parent)
 {
-    std::cout << "parser ctor\n";
 }
 
-
-void PageParser::replyFinished(QNetworkReply* reply)
+void PageParser::processReply(QNetworkReply* reply)
 {
     if ((int)reply->error())
         std::cout << reply->errorString().toStdString() << std::endl;
     else
-        std::cout << QString(reply->readAll()).toStdString() << std::endl;
+    {
+        QRegExp re("href\\s*=\\s*\"(http://[^\"\' ]*)\"", Qt::CaseInsensitive);
+        QString replyStr = reply->readAll();
+        int pos = 0;
+        while ((pos = re.indexIn(replyStr, pos, QRegExp::CaretWontMatch)) != -1)
+        {
+            std::cout << re.cap(1).toStdString() << std::endl;
+            pos += re.matchedLength();
+        }
+    }
 }
 
 void PageParser::run()
 {
-    QNetworkRequest request;
-    request.setUrl(QUrl("http://abrbr.ru"));
-    request.setRawHeader("User-Agent", "WebParser");
-    //request.setRawHeader("Content-Language", "en, ru");
-    //request.setRawHeader("Accept-Language", "en, ru");
-    //request.setRawHeader("Content-Type", "text/html;charset=utf-8");
-
     QNetworkAccessManager *manager = new QNetworkAccessManager();
     QObject::connect(manager, SIGNAL(finished(QNetworkReply*)),
-               this, SLOT(replyFinished(QNetworkReply*)));
+               this, SLOT(processReply(QNetworkReply*)));
 
-    manager->get(request);
+    manager->get(QNetworkRequest(QUrl("testPage.html")));
 }
