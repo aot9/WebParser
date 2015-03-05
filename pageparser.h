@@ -5,17 +5,33 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QNetworkRequest>
+#include <QStringList>
 
-class PageParser : public QObject, public QRunnable
+class Worker;
+
+class PageParser : public QObject
 {
     Q_OBJECT
+
+private:
+    QNetworkAccessManager* nm;
+    QStringList m_queue;
+    QString m_text;
+
+    uint threadId;
+
+public:
+    QAtomicInt isReady;
+
 public:
     explicit PageParser(QObject *parent = 0);
-    virtual void run();
+    PageParser(uint id, QString text);
 signals:
-    
+    void finishedParsing(QStringList, QString, int);
+
 public slots:
     void processReply(QNetworkReply* reply);
+    void parseUrl(uint tid, QString url);
     
 };
 

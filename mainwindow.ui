@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>595</width>
-    <height>434</height>
+    <width>890</width>
+    <height>490</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,34 +17,34 @@
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>440</x>
+      <x>550</x>
       <y>20</y>
       <width>98</width>
       <height>27</height>
      </rect>
     </property>
     <property name="text">
-     <string>Find</string>
+     <string>Start</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="lineEdit">
     <property name="geometry">
      <rect>
-      <x>32</x>
+      <x>180</x>
       <y>20</y>
-      <width>391</width>
+      <width>231</width>
       <height>27</height>
      </rect>
     </property>
     <property name="text">
-     <string>Type text to search here</string>
+     <string>brain</string>
     </property>
    </widget>
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>60</y>
+      <x>30</x>
+      <y>50</y>
       <width>66</width>
       <height>21</height>
      </rect>
@@ -56,8 +56,8 @@
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>90</y>
+      <x>30</x>
+      <y>80</y>
       <width>131</width>
       <height>21</height>
      </rect>
@@ -69,57 +69,154 @@
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>120</y>
-      <width>131</width>
-      <height>21</height>
+      <x>290</x>
+      <y>80</y>
+      <width>81</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
-     <string>Max. depth</string>
+     <string>Max links</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="lineEdit_3">
     <property name="geometry">
      <rect>
-      <x>190</x>
-      <y>90</y>
+      <x>180</x>
+      <y>80</y>
       <width>41</width>
       <height>27</height>
      </rect>
+    </property>
+    <property name="text">
+     <string>5</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="lineEdit_4">
     <property name="geometry">
      <rect>
-      <x>190</x>
-      <y>120</y>
+      <x>370</x>
+      <y>80</y>
       <width>41</width>
       <height>27</height>
      </rect>
+    </property>
+    <property name="text">
+     <string>50</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="lineEdit_5">
     <property name="geometry">
      <rect>
-      <x>190</x>
-      <y>60</y>
+      <x>180</x>
+      <y>50</y>
       <width>231</width>
       <height>27</height>
      </rect>
     </property>
     <property name="text">
-     <string/>
+     <string>http://habrahabr.ru</string>
     </property>
    </widget>
-   <widget class="QColumnView" name="columnView">
+   <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>35</x>
-      <y>170</y>
-      <width>541</width>
-      <height>192</height>
+      <x>30</x>
+      <y>20</y>
+      <width>101</width>
+      <height>31</height>
      </rect>
+    </property>
+    <property name="text">
+     <string>Text to search</string>
+    </property>
+   </widget>
+   <widget class="QListView" name="listView">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>140</y>
+      <width>391</width>
+      <height>281</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QListView" name="listView_2">
+    <property name="geometry">
+     <rect>
+      <x>470</x>
+      <y>140</y>
+      <width>391</width>
+      <height>281</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>120</y>
+      <width>221</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Found and processed links</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_6">
+    <property name="geometry">
+     <rect>
+      <x>470</x>
+      <y>120</y>
+      <width>141</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Links with matches</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_2">
+    <property name="geometry">
+     <rect>
+      <x>660</x>
+      <y>20</y>
+      <width>98</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Stop</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_7">
+    <property name="geometry">
+     <rect>
+      <x>570</x>
+      <y>70</y>
+      <width>121</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Matches found</string>
+    </property>
+   </widget>
+   <widget class="QLCDNumber" name="lcdNumber">
+    <property name="geometry">
+     <rect>
+      <x>680</x>
+      <y>70</y>
+      <width>71</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="lineWidth">
+     <number>2</number>
+    </property>
+    <property name="midLineWidth">
+     <number>0</number>
     </property>
    </widget>
   </widget>
@@ -128,7 +225,7 @@
     <enum>TopToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak">
-    <bool>true</bool>
+    <bool>false</bool>
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
@@ -137,7 +234,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>595</width>
+     <width>890</width>
      <height>25</height>
     </rect>
    </property>
