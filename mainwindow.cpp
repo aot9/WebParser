@@ -8,11 +8,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow),
     inProgressListModel(new QStringListModel),
     completedListModel(new QStringListModel),
-    isRunning(false)
+    maxMatch(0)
 {
     ui->setupUi(this);
 
-    this->setFixedSize(890, 490);
+    //this->setFixedSize(890, 490);
+    ui->pushButton_2->setEnabled(false);
 
     ui->listView->setModel(inProgressListModel);
     ui->listView_2->setModel(completedListModel);
@@ -20,43 +21,31 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->lineEdit_3->setInputMask("D");
     ui->lineEdit_4->setInputMask("D99");
 
+    ui->lineEdit_2->setReadOnly(true);
+
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
-void MainWindow::setWorkerPtr(Worker *ptr)
-{
-    workerPtr = ptr;
-}
 
 void MainWindow::on_pushButton_clicked()
 {
-    if (!isRunning)
-    {
-        ui->lineEdit->setReadOnly(true);// text
-        ui->lineEdit_5->setReadOnly(true);// start url
-        ui->lineEdit_3->setReadOnly(true);// threads
-        ui->lineEdit_4->setReadOnly(true);// links
+    ui->lineEdit->setReadOnly(true);// text
+    ui->lineEdit_5->setReadOnly(true);// start url
+    ui->lineEdit_3->setReadOnly(true);// threads
+    ui->lineEdit_4->setReadOnly(true);// links
 
-        isRunning = true;
-        ui->pushButton->setText("Pause");
+    ui->pushButton->setEnabled(false);
+    ui->pushButton_2->setEnabled(true);
 
-        emit startBtnClicked(ui->lineEdit_5->text(), ui->lineEdit->text(), ui->lineEdit_3->text().toInt(), ui->lineEdit_4->text().toInt());
+    ui->lcdNumber->display(0);
 
-        return;
-    }
-    if (ui->pushButton->text() == "Pause")
-    {
-         ui->pushButton->setText("Resume");
-         workerPtr->pause = true;
-    }
-    else if (ui->pushButton->text() == "Resume")
-    {
-       ui->pushButton->setText("Pause");
-       workerPtr->pause = false;
-    }
+    inProgressListModel->removeRows(0, inProgressListModel->rowCount());
+    completedListModel->removeRows(0, completedListModel->rowCount());
+
+    emit startBtnClicked(ui->lineEdit_5->text(), ui->lineEdit->text(), ui->lineEdit_3->text().toInt(), ui->lineEdit_4->text().toInt());
 }
 
 void MainWindow::updateLists(QString processedLink, int counter)
@@ -72,27 +61,32 @@ void MainWindow::updateLists(QString processedLink, int counter)
         completedListModel->setData(index, processedLink);
     }
 
+    if (counter > maxMatch)
+    {
+        ui->lcdNumber_2->display(counter);
+        maxMatch = counter;
+        ui->lineEdit_2->setText(processedLink);
+    }
+
     ui->lcdNumber->display(ui->lcdNumber->value() + counter);
 }
 
-void MainWindow::onWorkerFinished()
+void MainWindow::on_pushButton_2_clicked()
 {
-    ui->lcdNumber->display(0);
+    emit stopBtnPressed();
+}
+
+void MainWindow::onWorkerStopped()
+{
+    ui->pushButton->setEnabled(true);
+    ui->pushButton_2->setEnabled(false);
 
     ui->lineEdit->setReadOnly(false);
     ui->lineEdit_5->setReadOnly(false);
     ui->lineEdit_3->setReadOnly(false);
     ui->lineEdit_4->setReadOnly(false);
 
-    ui->pushButton->setText("Start");
 
-    isRunning = false;
-}
-
-void MainWindow::on_pushButton_2_clicked()
-{
-    workerPtr->stop = 1;
-    workerPtr->pause = 0;
 }
 
 

@@ -4,6 +4,9 @@
 #include <QObject>
 #include <QThread>
 #include <QStringList>
+#include <QVector>
+#include <QString>
+#include <QSet>
 
 class PageParser;
 
@@ -13,24 +16,29 @@ class Worker : public QObject
 public:
     explicit Worker(QObject *parent = 0);
     
+
 signals:
     void listsChanged(QString, int);
 
     void setTaskForThread(unsigned int, QString);
-    void workerFinished();
+    void workerStopped();
+
 public slots:
     void runParsing(QString url, QString text, int nt, int nl);
     void onPageParsed(QStringList newUrls, QString completedUrl, int count);
+    void stopParsing();
+
 private:
-    QThread** arrThread;
-    PageParser** arrPageParser;
+    //QThread** arrThread;
+    //PageParser** arrPageParser;
+
+    QVector<QThread*> vecThread;
+    QVector<PageParser*> vecPageParser;
 
     QStringList queue;
-    QStringList history;
+    QSet<QString> history;
 
-    int maxThreads;
     int maxLinks;
-    bool needCleanup;
 
 public:
     QAtomicInt pause, stop;

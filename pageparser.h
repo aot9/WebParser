@@ -17,7 +17,6 @@ private:
     QNetworkAccessManager* nm;
     QStringList m_queue;
     QString m_text;
-
     uint threadId;
 
 public:

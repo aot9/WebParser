@@ -14,12 +14,13 @@ int main(int argc, char *argv[])
     Worker* worker = new Worker();
     worker->moveToThread(thread);
 
-    w.setWorkerPtr(worker);
+    //w.setWorkerPtr(worker);
 
     QObject::connect(&w, SIGNAL(startBtnClicked(QString,QString,int,int)), worker, SLOT(runParsing(QString,QString,int,int)));
+    QObject::connect(&w, SIGNAL(stopBtnPressed()), worker, SLOT(stopParsing()));
 
+    QObject::connect(worker, SIGNAL(workerStopped()), &w, SLOT(onWorkerStopped()));
     QObject::connect(worker, SIGNAL(listsChanged(QString, int)), &w, SLOT(updateLists(QString, int)));
-    QObject::connect(worker, SIGNAL(workerFinished()), &w, SLOT(onWorkerFinished()));
 
     thread->start();
 
