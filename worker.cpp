@@ -54,7 +54,10 @@ void Worker::onPageParsed(QStringList newUrls, QString completedUrl, int count)
     history << completedUrl;
 
     if (history.size() == maxLinks)
+    {
+        stopParsing();
         return;
+    }
 
     for (int i = 0; i < newUrls.size(); ++i)
     {
