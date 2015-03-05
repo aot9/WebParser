@@ -21,7 +21,7 @@ void Worker::runParsing(QString url, QString text, int nt, int nl)
 
         vecPageParser[i]->moveToThread(vecThread[i]);
 
-        vecThread[0]->start();
+        vecThread[i]->start();
     }
 
     emit setTaskForThread(0, url);
