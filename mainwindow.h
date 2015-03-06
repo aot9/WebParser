@@ -1,11 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-
 #include <QMainWindow>
-#include <QStringList>
-
-class QStringListModel;
-class Worker;
 
 namespace Ui {
 class MainWindow;
@@ -20,21 +15,22 @@ public:
     ~MainWindow();
 
 signals:
-    void startBtnClicked(QString url, QString text, int threads, int links);
-    void stopBtnPressed();
+    void start(QString aUrl, QString aText, int aTreads, int aLinks);
+    void stop();
+    void pause();
+    void resume();
 
 private slots:
-    void on_pushButton_clicked();
-    void on_pushButton_2_clicked();
+    void on_startButton_clicked();
+    void on_stopButton_clicked();
 
 public slots:
-    void updateLists(QString, int);
+    void updateLists(QString aProcessedLink, int aMatchNum);
     void onWorkerStopped();
 
 private:
     Ui::MainWindow *ui;
-    QStringListModel *inProgressListModel, *completedListModel;
-    uint maxMatch;
+    int m_maxMatch;
 };
 
 #endif // MAINWINDOW_H

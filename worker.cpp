@@ -16,8 +16,11 @@ void Worker::runParsing(QString url, QString text, int nt, int nl)
         vecThread.push_back(new QThread);
         vecPageParser.push_back(new PageParser(i, text));
 
-        QObject::connect(vecPageParser[i], SIGNAL(finishedParsing(QStringList, QString, int)), this, SLOT(onPageParsed(QStringList, QString, int)));
-        QObject::connect(this, SIGNAL(setTaskForThread(uint, QString)), vecPageParser[i], SLOT(parseUrl(uint, QString)));
+        QObject::connect(vecPageParser[i], SIGNAL(finishedParsing(QStringList, QString, QString, int)),
+                         this,             SLOT(onPageParsed(QStringList, QString, QString, int)));
+
+        QObject::connect(this,             SIGNAL(setTaskForThread(uint, QString)),
+                         vecPageParser[i], SLOT(parseUrl(uint, QString)));
 
         vecPageParser[i]->moveToThread(vecThread[i]);
 
@@ -47,9 +50,36 @@ void Worker::stopParsing()
     emit workerStopped();
 }
 
-void Worker::onPageParsed(QStringList newUrls, QString completedUrl, int count)
+void Worker::onPause()
 {
-    emit listsChanged(completedUrl, count);
+    for (int i = 0; i < vecThread.size(); ++i)
+    {
+        vecPageParser[i]->isPause = true;
+        vecPageParser[i]->isReady = false;
+    }
+}
+
+void Worker::onResume()
+{
+    for (int i = 0; i < vecThread.size(); ++i)
+    {
+        vecPageParser[i]->isPause = false;
+        vecPageParser[i]->isReady = true;
+    }
+
+    if (!queue.empty())
+    {
+        emit setTaskForThread(0, queue.front());
+        queue.pop_front();
+    }
+}
+
+void Worker::onPageParsed(QStringList newUrls, QString completedUrl, QString errStr, int count)
+{
+    if (errStr.size())
+        emit listsChanged(completedUrl + " " + errStr, -1);
+    else
+        emit listsChanged(completedUrl, count);
 
     history << completedUrl;
 

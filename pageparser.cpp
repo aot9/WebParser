@@ -1,5 +1,8 @@
 #include "pageparser.h"
-#include <iostream>
+
+#include <QNetworkReply>
+#include <QNetworkRequest>
+#include <QNetworkAccessManager>
 #include <QDebug>
 #include <QRegExp>
 #include <QStringList>
@@ -10,24 +13,23 @@ PageParser::PageParser(uint id, QString text) :
     nm(NULL),
     m_text(text),
     isReady(true),
+    isPause(false),
     threadId(id)
 {
 }
 
 void PageParser::processReply(QNetworkReply* reply)
 {
-
     QString requestUrl = reply->request().url().toString();
+    QString errString;
+    int matchesFound = 0;
+
     if ((int)reply->error())
     {
-        isReady = true;
-        QString errString = reply->errorString();
-        reply->deleteLater();
-        emit finishedParsing(m_queue, requestUrl + " " + errString, 0);
+        errString = reply->errorString();
     }
     else
     {
-        int matchesFound = 0;
         QRegExp re("href\\s*=\\s*\"(http://[^\"\' ]*)\"|(" + m_text + ")", Qt::CaseInsensitive);
 
         QString replyStr = reply->readAll();
@@ -45,15 +47,17 @@ void PageParser::processReply(QNetworkReply* reply)
 
             pos += re.matchedLength();
         }
-        isReady = true;
-        reply->deleteLater();
-        emit finishedParsing(m_queue, requestUrl, matchesFound);
-    }  
+    }
+
+    isReady = true;
+    reply->deleteLater();
+
+    emit finishedParsing(m_queue, requestUrl, errString, matchesFound);
 }
 
 void PageParser::parseUrl(uint tid, QString url)
 {
-    if (tid != threadId)
+    if (tid != threadId || isPause)
         return;
 
     isReady = false;
@@ -64,6 +68,7 @@ void PageParser::parseUrl(uint tid, QString url)
     {
         nm = new QNetworkAccessManager();
         QObject::connect(nm, SIGNAL(finished(QNetworkReply*)), this, SLOT(processReply(QNetworkReply*)));
+        QObject::connect(this->thread(), SIGNAL(finished()), nm, SLOT(deleteLater()));
     }
 
     nm->get(QNetworkRequest(url));

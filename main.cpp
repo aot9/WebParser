@@ -1,7 +1,8 @@
 #include <QtGui/QApplication>
+#include <QThread>
+
 #include "mainwindow.h"
 #include <pageparser.h>
-#include <QThread>
 #include "worker.h"
 
 int main(int argc, char *argv[])
@@ -14,10 +15,10 @@ int main(int argc, char *argv[])
     Worker* worker = new Worker();
     worker->moveToThread(thread);
 
-    //w.setWorkerPtr(worker);
-
-    QObject::connect(&w, SIGNAL(startBtnClicked(QString,QString,int,int)), worker, SLOT(runParsing(QString,QString,int,int)));
-    QObject::connect(&w, SIGNAL(stopBtnPressed()), worker, SLOT(stopParsing()));
+    QObject::connect(&w, SIGNAL(start(QString,QString,int,int)), worker, SLOT(runParsing(QString,QString,int,int)));
+    QObject::connect(&w, SIGNAL(stop()), worker, SLOT(stopParsing()));
+    QObject::connect(&w, SIGNAL(pause()), worker, SLOT(onPause()));
+    QObject::connect(&w, SIGNAL(resume()), worker, SLOT(onResume()));
 
     QObject::connect(worker, SIGNAL(workerStopped()), &w, SLOT(onWorkerStopped()));
     QObject::connect(worker, SIGNAL(listsChanged(QString, int)), &w, SLOT(updateLists(QString, int)));

@@ -25,8 +25,10 @@ signals:
 
 public slots:
     void runParsing(QString url, QString text, int nt, int nl);
-    void onPageParsed(QStringList newUrls, QString completedUrl, int count);
+    void onPageParsed(QStringList newUrls, QString completedUrl, QString errStr, int count);
     void stopParsing();
+    void onPause();
+    void onResume();
 
 private:
     //QThread** arrThread;

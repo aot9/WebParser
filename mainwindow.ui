@@ -6,18 +6,18 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>890</width>
-    <height>541</height>
+    <width>955</width>
+    <height>619</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="startButton">
     <property name="geometry">
      <rect>
-      <x>470</x>
+      <x>500</x>
       <y>20</y>
       <width>98</width>
       <height>27</height>
@@ -27,12 +27,12 @@
      <string>Start</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit">
+   <widget class="QLineEdit" name="textToSearch">
     <property name="geometry">
      <rect>
-      <x>210</x>
-      <y>20</y>
-      <width>231</width>
+      <x>30</x>
+      <y>30</y>
+      <width>271</width>
       <height>27</height>
      </rect>
     </property>
@@ -44,46 +44,46 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>50</y>
+      <y>60</y>
       <width>121</width>
       <height>31</height>
      </rect>
     </property>
     <property name="text">
-     <string>StartURL</string>
+     <string>Start URL:</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>80</y>
+      <y>120</y>
       <width>171</width>
       <height>31</height>
      </rect>
     </property>
     <property name="text">
-     <string>Number of threads</string>
+     <string>Number of threads:</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>110</y>
+      <y>180</y>
       <width>151</width>
       <height>31</height>
      </rect>
     </property>
     <property name="text">
-     <string>Max. links to scan</string>
+     <string>Max. links to scan:</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit_3">
+   <widget class="QLineEdit" name="numThreads">
     <property name="geometry">
      <rect>
-      <x>210</x>
-      <y>80</y>
+      <x>30</x>
+      <y>150</y>
       <width>41</width>
       <height>27</height>
      </rect>
@@ -92,11 +92,11 @@
      <string>5</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit_4">
+   <widget class="QLineEdit" name="numLinks">
     <property name="geometry">
      <rect>
-      <x>210</x>
-      <y>110</y>
+      <x>30</x>
+      <y>210</y>
       <width>41</width>
       <height>27</height>
      </rect>
@@ -105,12 +105,12 @@
      <string>50</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit_5">
+   <widget class="QLineEdit" name="startUrl">
     <property name="geometry">
      <rect>
-      <x>210</x>
-      <y>50</y>
-      <width>231</width>
+      <x>30</x>
+      <y>90</y>
+      <width>271</width>
       <height>27</height>
      </rect>
     </property>
@@ -122,65 +122,45 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>20</y>
+      <y>0</y>
       <width>151</width>
       <height>31</height>
      </rect>
     </property>
     <property name="text">
-     <string>Text to search</string>
-    </property>
-   </widget>
-   <widget class="QListView" name="listView">
-    <property name="geometry">
-     <rect>
-      <x>30</x>
-      <y>190</y>
-      <width>391</width>
-      <height>281</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QListView" name="listView_2">
-    <property name="geometry">
-     <rect>
-      <x>470</x>
-      <y>190</y>
-      <width>391</width>
-      <height>281</height>
-     </rect>
+     <string>Text to search:</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_5">
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>170</y>
+      <y>250</y>
       <width>221</width>
       <height>17</height>
      </rect>
     </property>
     <property name="text">
-     <string>Found and processed links</string>
+     <string>Processed links:</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_6">
     <property name="geometry">
      <rect>
-      <x>470</x>
-      <y>170</y>
-      <width>141</width>
+      <x>500</x>
+      <y>250</y>
+      <width>151</width>
       <height>17</height>
      </rect>
     </property>
     <property name="text">
-     <string>Links with matches</string>
+     <string>Links with matches:</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_2">
+   <widget class="QPushButton" name="stopButton">
     <property name="geometry">
      <rect>
-      <x>580</x>
+      <x>620</x>
       <y>20</y>
       <width>98</width>
       <height>27</height>
@@ -193,21 +173,21 @@
    <widget class="QLabel" name="label_7">
     <property name="geometry">
      <rect>
-      <x>470</x>
+      <x>510</x>
       <y>70</y>
       <width>211</width>
       <height>31</height>
      </rect>
     </property>
     <property name="text">
-     <string>Total number of mathces</string>
+     <string>Total number of mathces:</string>
     </property>
    </widget>
    <widget class="QLCDNumber" name="lcdNumber">
     <property name="geometry">
      <rect>
-      <x>690</x>
-      <y>70</y>
+      <x>510</x>
+      <y>100</y>
       <width>71</width>
       <height>31</height>
      </rect>
@@ -222,21 +202,21 @@
    <widget class="QLabel" name="label_8">
     <property name="geometry">
      <rect>
-      <x>470</x>
-      <y>100</y>
+      <x>510</x>
+      <y>140</y>
       <width>301</width>
       <height>31</height>
      </rect>
     </property>
     <property name="text">
-     <string>Link with max. number of matches:</string>
+     <string>Link with max. number of matches so far:</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit_2">
+   <widget class="QLineEdit" name="maxMatchLink">
     <property name="geometry">
      <rect>
-      <x>470</x>
-      <y>130</y>
+      <x>510</x>
+      <y>170</y>
       <width>281</width>
       <height>31</height>
      </rect>
@@ -245,8 +225,8 @@
    <widget class="QLCDNumber" name="lcdNumber_2">
     <property name="geometry">
      <rect>
-      <x>770</x>
-      <y>130</y>
+      <x>810</x>
+      <y>170</y>
       <width>71</width>
       <height>31</height>
      </rect>
@@ -256,6 +236,26 @@
     </property>
     <property name="midLineWidth">
      <number>0</number>
+    </property>
+   </widget>
+   <widget class="QListWidget" name="processedLinksList">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>270</y>
+      <width>431</width>
+      <height>281</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QListWidget" name="linksWithMatchList">
+    <property name="geometry">
+     <rect>
+      <x>500</x>
+      <y>270</y>
+      <width>431</width>
+      <height>281</height>
+     </rect>
     </property>
    </widget>
   </widget>
@@ -273,8 +273,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>890</width>
-     <height>29</height>
+     <width>955</width>
+     <height>25</height>
     </rect>
    </property>
   </widget>

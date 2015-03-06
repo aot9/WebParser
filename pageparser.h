@@ -1,13 +1,10 @@
 #ifndef PAGEPARSER_H
 #define PAGEPARSER_H
 
-#include <QRunnable>
-#include <QNetworkAccessManager>
-#include <QNetworkReply>
-#include <QNetworkRequest>
 #include <QStringList>
 
-class Worker;
+class QNetworkReply;
+class QNetworkAccessManager;
 
 class PageParser : public QObject
 {
@@ -21,17 +18,18 @@ private:
 
 public:
     QAtomicInt isReady;
+    QAtomicInt isPause;
 
 public:
     explicit PageParser(QObject *parent = 0);
     PageParser(uint id, QString text);
 signals:
-    void finishedParsing(QStringList, QString, int);
+    void finishedParsing(QStringList, QString, QString, int);
 
 public slots:
     void processReply(QNetworkReply* reply);
     void parseUrl(uint tid, QString url);
-    
+
 };
 
 #endif // PAGEPARSER_H

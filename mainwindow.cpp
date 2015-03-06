@@ -1,28 +1,21 @@
+#include <QBrush>
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <QStringListModel>
 #include "worker.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    inProgressListModel(new QStringListModel),
-    completedListModel(new QStringListModel),
-    maxMatch(0)
+    m_maxMatch(0)
 {
     ui->setupUi(this);
 
-    //this->setFixedSize(890, 490);
-    ui->pushButton_2->setEnabled(false);
+    ui->stopButton->setEnabled(false);
+    ui->maxMatchLink->setReadOnly(true);
 
-    ui->listView->setModel(inProgressListModel);
-    ui->listView_2->setModel(completedListModel);
-
-    ui->lineEdit_3->setInputMask("D");
-    ui->lineEdit_4->setInputMask("D99");
-
-    ui->lineEdit_2->setReadOnly(true);
-
+    ui->numThreads->setInputMask("D");
+    ui->numLinks->setInputMask("D99");
 }
 
 MainWindow::~MainWindow()
@@ -30,63 +23,79 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::on_pushButton_clicked()
+void MainWindow::on_startButton_clicked()
 {
-    ui->lineEdit->setReadOnly(true);// text
-    ui->lineEdit_5->setReadOnly(true);// start url
-    ui->lineEdit_3->setReadOnly(true);// threads
-    ui->lineEdit_4->setReadOnly(true);// links
+    if (ui->startButton->text() == "Start")
+    {
+        ui->textToSearch->setReadOnly(true);
+        ui->startUrl->setReadOnly(true);
+        ui->numThreads->setReadOnly(true);
+        ui->numLinks->setReadOnly(true);
+        ui->maxMatchLink->setText("");
 
-    ui->pushButton->setEnabled(false);
-    ui->pushButton_2->setEnabled(true);
+        ui->stopButton->setEnabled(true);
 
-    ui->lcdNumber->display(0);
+        ui->lcdNumber->display(0);
 
-    inProgressListModel->removeRows(0, inProgressListModel->rowCount());
-    completedListModel->removeRows(0, completedListModel->rowCount());
+        ui->processedLinksList->clear();
+        ui->linksWithMatchList->clear();
 
-    emit startBtnClicked(ui->lineEdit_5->text(), ui->lineEdit->text(), ui->lineEdit_3->text().toInt(), ui->lineEdit_4->text().toInt());
+        ui->startButton->setText("Pause");
+
+        emit start(ui->startUrl->text(), ui->textToSearch->text(), ui->numThreads->text().toInt(), ui->numLinks->text().toInt());
+    }
+    else if (ui->startButton->text() == "Pause")
+    {
+        ui->startButton->setText("Resume");
+
+        emit pause();
+    }
+    else if (ui->startButton->text() == "Resume")
+    {
+        ui->startButton->setText("Pause");
+
+        emit resume();
+    }
 }
 
-void MainWindow::updateLists(QString processedLink, int counter)
+void MainWindow::updateLists(QString aProcessedLink, int aMatchNum)
 {
-    inProgressListModel->insertRow(inProgressListModel->rowCount());
-    QModelIndex index = inProgressListModel->index(inProgressListModel->rowCount()-1);
-    inProgressListModel->setData(index, processedLink);
-
-    if (counter > 0)
+    ui->processedLinksList->addItem(new QListWidgetItem(aProcessedLink));
+    if (aMatchNum == -1)
     {
-        completedListModel->insertRow(completedListModel->rowCount());
-        index = completedListModel->index(completedListModel->rowCount()-1);
-        completedListModel->setData(index, processedLink);
+        ui->processedLinksList->item(ui->processedLinksList->count() - 1)->setForeground(QBrush(Qt::red));
+    }
+    else if (aMatchNum > 0)
+    {
+        ui->linksWithMatchList->addItem(new QListWidgetItem(aProcessedLink));
+        ui->lcdNumber->display(ui->lcdNumber->value() + aMatchNum);
     }
 
-    if (counter > maxMatch)
+    if (aMatchNum > m_maxMatch)
     {
-        ui->lcdNumber_2->display(counter);
-        maxMatch = counter;
-        ui->lineEdit_2->setText(processedLink);
+        ui->lcdNumber_2->display(aMatchNum);
+        m_maxMatch = aMatchNum;
+        ui->maxMatchLink->setText(aProcessedLink);
     }
-
-    ui->lcdNumber->display(ui->lcdNumber->value() + counter);
 }
 
-void MainWindow::on_pushButton_2_clicked()
+void MainWindow::on_stopButton_clicked()
 {
-    emit stopBtnPressed();
+    emit stop();
 }
 
 void MainWindow::onWorkerStopped()
 {
-    ui->pushButton->setEnabled(true);
-    ui->pushButton_2->setEnabled(false);
+    ui->startButton->setText("Start");
+    ui->startButton->setEnabled(true);
 
-    ui->lineEdit->setReadOnly(false);
-    ui->lineEdit_5->setReadOnly(false);
-    ui->lineEdit_3->setReadOnly(false);
-    ui->lineEdit_4->setReadOnly(false);
+    ui->stopButton->setEnabled(false);
 
+    ui->textToSearch->setReadOnly(false);
+    ui->startUrl->setReadOnly(false);
+    ui->numThreads->setReadOnly(false);
+    ui->numLinks->setReadOnly(false);
 
+    m_maxMatch = 0;
 }
-
 
