@@ -2,13 +2,13 @@
 #define WORKER_H
 
 #include <QObject>
-#include <QThread>
 #include <QStringList>
 #include <QVector>
 #include <QString>
 #include <QSet>
 
 class PageParser;
+class QThread;
 
 class Worker : public QObject
 {
@@ -16,7 +16,6 @@ class Worker : public QObject
 public:
     explicit Worker(QObject *parent = 0);
     
-
 signals:
     void listsChanged(QString, int);
 
@@ -24,26 +23,20 @@ signals:
     void workerStopped();
 
 public slots:
-    void runParsing(QString url, QString text, int nt, int nl);
-    void onPageParsed(QStringList newUrls, QString completedUrl, QString errStr, int count);
+    void runParsing(QString aUrl, QString aText, int aThreadNum, int aLinkNum);
+    void onPageParsed(QStringList aNewUrls, QString aCompletedUrl, QString aErrStr, int aMatchNum);
     void stopParsing();
     void onPause();
     void onResume();
 
 private:
-    //QThread** arrThread;
-    //PageParser** arrPageParser;
+    QVector<QThread*> m_vecThread;
+    QVector<PageParser*> m_vecPageParser;
 
-    QVector<QThread*> vecThread;
-    QVector<PageParser*> vecPageParser;
+    QStringList m_queue;
+    QSet<QString> m_history;
 
-    QStringList queue;
-    QSet<QString> history;
-
-    int maxLinks;
-
-public:
-    QAtomicInt pause, stop;
+    int m_maxLinkNum;
 };
 
 #endif // WORKER_H
