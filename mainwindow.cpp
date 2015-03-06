@@ -16,6 +16,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->numThreads->setInputMask("D");
     ui->numLinks->setInputMask("D99");
+
+    ui->progressBar->setValue(0);
 }
 
 MainWindow::~MainWindow()
@@ -36,6 +38,11 @@ void MainWindow::on_startButton_clicked()
         ui->stopButton->setEnabled(true);
 
         ui->lcdNumber->display(0);
+        ui->lcdNumber_2->display(0);
+
+        ui->progressBar->setValue(0);
+        ui->progressBar->setMinimum(0);
+        ui->progressBar->setMaximum(ui->numLinks->text().toInt());
 
         ui->processedLinksList->clear();
         ui->linksWithMatchList->clear();
@@ -77,6 +84,8 @@ void MainWindow::updateLists(QString aProcessedLink, int aMatchNum)
         m_maxMatch = aMatchNum;
         ui->maxMatchLink->setText(aProcessedLink);
     }
+
+    ui->progressBar->setValue(ui->progressBar->value() + 1);
 }
 
 void MainWindow::on_stopButton_clicked()

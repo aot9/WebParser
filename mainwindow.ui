@@ -71,12 +71,12 @@
      <rect>
       <x>30</x>
       <y>180</y>
-      <width>151</width>
+      <width>171</width>
       <height>31</height>
      </rect>
     </property>
     <property name="text">
-     <string>Max. links to scan:</string>
+     <string>Number of links to scan:</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="numThreads">
@@ -160,7 +160,7 @@
    <widget class="QPushButton" name="stopButton">
     <property name="geometry">
      <rect>
-      <x>620</x>
+      <x>610</x>
       <y>20</y>
       <width>98</width>
       <height>27</height>
@@ -256,6 +256,19 @@
       <width>431</width>
       <height>281</height>
      </rect>
+    </property>
+   </widget>
+   <widget class="QProgressBar" name="progressBar">
+    <property name="geometry">
+     <rect>
+      <x>740</x>
+      <y>20</y>
+      <width>151</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="value">
+     <number>24</number>
     </property>
    </widget>
   </widget>
