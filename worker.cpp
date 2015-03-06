@@ -54,8 +54,8 @@ void Worker::onPause()
 {
     for (int i = 0; i < vecThread.size(); ++i)
     {
-        vecPageParser[i]->isPause = true;
-        vecPageParser[i]->isReady = false;
+        vecPageParser[i]->m_isPause = true;
+        vecPageParser[i]->m_isReady = false;
     }
 }
 
@@ -63,8 +63,8 @@ void Worker::onResume()
 {
     for (int i = 0; i < vecThread.size(); ++i)
     {
-        vecPageParser[i]->isPause = false;
-        vecPageParser[i]->isReady = true;
+        vecPageParser[i]->m_isPause = false;
+        vecPageParser[i]->m_isReady = true;
     }
 
     if (!queue.empty())
@@ -97,7 +97,7 @@ void Worker::onPageParsed(QStringList newUrls, QString completedUrl, QString err
 
     for (int i = 0; i < vecThread.size(); ++i)
     {
-        if (vecPageParser[i]->isReady)
+        if (vecPageParser[i]->m_isReady)
         {
             if (!queue.empty())
             {

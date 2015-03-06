@@ -11,18 +11,19 @@ class PageParser : public QObject
     Q_OBJECT
 
 private:
-    QNetworkAccessManager* nm;
+    QNetworkAccessManager* m_pNetManager;
     QStringList m_queue;
     QString m_text;
-    uint threadId;
+    uint m_threadId;
 
 public:
-    QAtomicInt isReady;
-    QAtomicInt isPause;
+    QAtomicInt m_isReady;
+    QAtomicInt m_isPause;
 
 public:
     explicit PageParser(QObject *parent = 0);
-    PageParser(uint id, QString text);
+    PageParser(uint aId, QString aText);
+
 signals:
     void finishedParsing(QStringList, QString, QString, int);
 

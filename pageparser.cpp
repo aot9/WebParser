@@ -3,36 +3,35 @@
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QNetworkAccessManager>
-#include <QDebug>
 #include <QRegExp>
 #include <QStringList>
 #include <QThread>
 
-PageParser::PageParser(uint id, QString text) :
+PageParser::PageParser(uint aId, QString aText) :
     QObject(NULL),
-    nm(NULL),
-    m_text(text),
-    isReady(true),
-    isPause(false),
-    threadId(id)
+    m_pNetManager(NULL),
+    m_text(aText),
+    m_isReady(true),
+    m_isPause(false),
+    m_threadId(aId)
 {
 }
 
-void PageParser::processReply(QNetworkReply* reply)
+void PageParser::processReply(QNetworkReply* aReply)
 {
-    QString requestUrl = reply->request().url().toString();
+    QString requestUrl = aReply->request().url().toString();
     QString errString;
     int matchesFound = 0;
 
-    if ((int)reply->error())
+    if ((int)aReply->error())
     {
-        errString = reply->errorString();
+        errString = aReply->errorString();
     }
     else
     {
         QRegExp re("href\\s*=\\s*\"(http://[^\"\' ]*)\"|(" + m_text + ")", Qt::CaseInsensitive);
 
-        QString replyStr = reply->readAll();
+        QString replyStr = aReply->readAll();
 
         int pos = 0;
         while ((pos = re.indexIn(replyStr, pos, QRegExp::CaretWontMatch)) != -1)
@@ -49,27 +48,27 @@ void PageParser::processReply(QNetworkReply* reply)
         }
     }
 
-    isReady = true;
-    reply->deleteLater();
+    m_isReady = true;
+    aReply->deleteLater();
 
     emit finishedParsing(m_queue, requestUrl, errString, matchesFound);
 }
 
-void PageParser::parseUrl(uint tid, QString url)
+void PageParser::parseUrl(uint aThreadId, QString aUrl)
 {
-    if (tid != threadId || isPause)
+    if (aThreadId != m_threadId || m_isPause)
         return;
 
-    isReady = false;
+    m_isReady = false;
 
     m_queue.clear();
 
-    if (nm == NULL)
+    if (m_pNetManager == NULL)
     {
-        nm = new QNetworkAccessManager();
-        QObject::connect(nm, SIGNAL(finished(QNetworkReply*)), this, SLOT(processReply(QNetworkReply*)));
-        QObject::connect(this->thread(), SIGNAL(finished()), nm, SLOT(deleteLater()));
+        m_pNetManager = new QNetworkAccessManager();
+        QObject::connect(m_pNetManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(processReply(QNetworkReply*)));
+        QObject::connect(this->thread(), SIGNAL(finished()), m_pNetManager, SLOT(deleteLater()));
     }
 
-    nm->get(QNetworkRequest(url));
+    m_pNetManager->get(QNetworkRequest(aUrl));
 }
