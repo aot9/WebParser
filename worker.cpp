@@ -48,16 +48,25 @@ void Worker::stopParsing()
     m_vecPageParser.clear();
     m_vecThread.clear();
 
+    m_needPause = false;
+
     emit workerStopped();
 }
 
 void Worker::onPause()
 {
+    m_activeTaskCount = 0;
+
     for (int i = 0; i < m_vecThread.size(); ++i)
     {
+        if (!m_vecPageParser[i]->m_isReady)
+            ++m_activeTaskCount;
+
         m_vecPageParser[i]->m_isPause = true;
         m_vecPageParser[i]->m_isReady = false;
     }
+
+    m_needPause = true;
 }
 
 void Worker::onResume()
@@ -107,6 +116,15 @@ void Worker::onPageParsed(QStringList aNewUrls, QString aCompletedUrl, QString a
             }
             else
                 break;
+        }
+    }
+
+    if (m_needPause)
+    {
+        if (--m_activeTaskCount <= 0)
+        {
+            m_needPause = false;
+            emit workerPaused();
         }
     }
 }

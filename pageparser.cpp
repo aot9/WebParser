@@ -11,9 +11,9 @@ PageParser::PageParser(uint aId, QString aText) :
     QObject(NULL),
     m_pNetManager(NULL),
     m_text(aText),
+    m_threadId(aId),
     m_isReady(true),
-    m_isPause(false),
-    m_threadId(aId)
+    m_isPause(false)
 {
 }
 

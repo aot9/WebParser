@@ -21,6 +21,7 @@ int main(int argc, char *argv[])
     QObject::connect(&w, SIGNAL(resume()), worker, SLOT(onResume()));
 
     QObject::connect(worker, SIGNAL(workerStopped()), &w, SLOT(onWorkerStopped()));
+    QObject::connect(worker, SIGNAL(workerPaused()), &w, SLOT(onWorkerPaused()));
     QObject::connect(worker, SIGNAL(listsChanged(QString, int)), &w, SLOT(updateLists(QString, int)));
 
     thread->start();

@@ -21,6 +21,7 @@ signals:
 
     void setTaskForThread(unsigned int, QString);
     void workerStopped();
+    void workerPaused();
 
 public slots:
     void runParsing(QString aUrl, QString aText, int aThreadNum, int aLinkNum);
@@ -37,6 +38,8 @@ private:
     QSet<QString> m_history;
 
     int m_maxLinkNum;
+    int m_activeTaskCount;
+    bool m_needPause;
 };
 
 #endif // WORKER_H

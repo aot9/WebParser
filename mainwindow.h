@@ -27,6 +27,7 @@ private slots:
 public slots:
     void updateLists(QString aProcessedLink, int aMatchNum);
     void onWorkerStopped();
+    void onWorkerPaused();
 
 private:
     Ui::MainWindow *ui;

@@ -53,7 +53,8 @@ void MainWindow::on_startButton_clicked()
     }
     else if (ui->startButton->text() == "Pause")
     {
-        ui->startButton->setText("Resume");
+        ui->startButton->setEnabled(false);
+        ui->startButton->setText("Pausing...");
 
         emit pause();
     }
@@ -106,5 +107,11 @@ void MainWindow::onWorkerStopped()
     ui->numLinks->setReadOnly(false);
 
     m_maxMatch = 0;
+}
+
+void MainWindow::onWorkerPaused()
+{
+    ui->startButton->setEnabled(true);
+    ui->startButton->setText("Resume");
 }
 
