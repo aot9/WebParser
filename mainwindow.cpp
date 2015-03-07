@@ -90,6 +90,7 @@ void MainWindow::updateLists(QString aProcessedLink, int aMatchNum)
         ui->lcdNumber_2->display(aMatchNum);
         m_maxMatch = aMatchNum;
         ui->maxMatchLink->setText(aProcessedLink);
+        ui->maxMatchLink->setCursorPosition(0);
     }
 
     ui->progressBar->setValue(ui->progressBar->value() + 1);
