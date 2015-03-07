@@ -6,16 +6,19 @@
 #include <QRegExp>
 #include <QStringList>
 #include <QThread>
+#include <iostream>
+
+#define URL_PATTERN "href\\s*=\\s*\"(http://[^\"\' ]*)\""
 
 PageParser::PageParser(uint aId, QString aText) :
     QObject(NULL),
+    m_isReady(true),
+    m_isPause(false),
     m_pNetManager(NULL),
     m_text(aText),
     m_threadId(aId),
-    m_isReady(true),
-    m_isPause(false)
-{
-}
+    m_re(URL_PATTERN"|("+aText+")",  Qt::CaseInsensitive)
+{}
 
 void PageParser::processReply(QNetworkReply* aReply)
 {
@@ -29,22 +32,20 @@ void PageParser::processReply(QNetworkReply* aReply)
     }
     else
     {
-        QRegExp re("href\\s*=\\s*\"(http://[^\"\' ]*)\"|(" + m_text + ")", Qt::CaseInsensitive);
-
         QString replyStr = aReply->readAll();
 
         int pos = 0;
-        while ((pos = re.indexIn(replyStr, pos, QRegExp::CaretWontMatch)) != -1)
+        while ((pos = m_re.indexIn(replyStr, pos, QRegExp::CaretWontMatch)) != -1)
         {
-            QString url = re.cap(1);
-            QString tex = re.cap(2);
+            QString url = m_re.cap(1);
+            QString tex = m_re.cap(2);
 
             if (url.size())
                 m_queue.append(url);
             if (tex.size())
                 ++matchesFound;
 
-            pos += re.matchedLength();
+            pos += m_re.matchedLength();
         }
     }
 

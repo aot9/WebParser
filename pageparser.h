@@ -2,6 +2,7 @@
 #define PAGEPARSER_H
 
 #include <QStringList>
+#include <QRegExp>
 
 class QNetworkReply;
 class QNetworkAccessManager;
@@ -10,15 +11,16 @@ class PageParser : public QObject
 {
     Q_OBJECT
 
+public:
+    QAtomicInt m_isReady;
+    QAtomicInt m_isPause;
+
 private:
     QNetworkAccessManager* m_pNetManager;
     QStringList m_queue;
     QString m_text;
     uint m_threadId;
-
-public:
-    QAtomicInt m_isReady;
-    QAtomicInt m_isPause;
+    QRegExp m_re;
 
 public:
     explicit PageParser(QObject *parent = 0);
