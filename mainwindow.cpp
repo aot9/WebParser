@@ -11,6 +11,12 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    QObject::connect(ui->processedLinksList->model(), SIGNAL(rowsInserted(const QModelIndex&, int, int)),
+                     ui->processedLinksList,          SLOT(scrollToBottom()));
+
+    QObject::connect(ui->linksWithMatchList->model(), SIGNAL(rowsInserted(const QModelIndex&, int, int)),
+                     ui->linksWithMatchList,          SLOT(scrollToBottom()));
+
     ui->stopButton->setEnabled(false);
     ui->maxMatchLink->setReadOnly(true);
 
