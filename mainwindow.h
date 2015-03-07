@@ -15,7 +15,7 @@ public:
     ~MainWindow();
 
 signals:
-    void start(QString aUrl, QString aText, int aTreads, int aLinks);
+    void start(QString, QString, int, int);
     void stop();
     void pause();
     void resume();

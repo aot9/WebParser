@@ -18,7 +18,6 @@ public:
 private:
     QNetworkAccessManager* m_pNetManager;
     QStringList m_queue;
-    QString m_text;
     uint m_threadId;
     QRegExp m_re;
 

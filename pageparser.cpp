@@ -15,7 +15,6 @@ PageParser::PageParser(uint aId, QString aText) :
     m_isReady(true),
     m_isPause(false),
     m_pNetManager(NULL),
-    m_text(aText),
     m_threadId(aId),
     m_re(URL_PATTERN"|("+aText+")",  Qt::CaseInsensitive)
 {}
