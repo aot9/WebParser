@@ -113,9 +113,6 @@ void Worker::onPageParsed(QStringList aNewUrls, QString aCompletedUrl, QString a
         return;
     }
 
-    //if (m_history.contains(aCompletedUrl))
-    //    std::cout << "DUPLICATE.... " << aCompletedUrl.toStdString() << std::endl;
-
     for (int i = 0; i < m_vecThread.size(); ++i)
     {
         if (m_vecPageParser[i]->m_isReady)
