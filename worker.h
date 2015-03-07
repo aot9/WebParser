@@ -36,6 +36,7 @@ private:
 
     QStringList m_queue;
     QSet<QString> m_history;
+    //QStringList m_history;
 
     int m_maxLinkNum;
     int m_activeTaskCount;

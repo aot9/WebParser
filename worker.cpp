@@ -3,14 +3,19 @@
 #include "worker.h"
 #include "pageparser.h"
 
+#include <iostream>
+
 Worker::Worker(QObject *parent) :
-    QObject(parent)
+    QObject(parent), m_needPause(false)
 {
 }
 
 void Worker::runParsing(QString aUrl, QString aText, int aThreadNum, int aLinkNum)
 {
     m_maxLinkNum = aLinkNum;
+
+    m_queue.clear();
+    m_history.clear();
 
     for (int i = 0; i < aThreadNum; ++i)
     {
@@ -33,9 +38,6 @@ void Worker::runParsing(QString aUrl, QString aText, int aThreadNum, int aLinkNu
 
 void Worker::stopParsing()
 {
-    m_queue.clear();
-    m_history.clear();
-
     for (int i = 0; i < m_vecThread.size(); ++i)
     {
         m_vecThread[i]->quit();
@@ -66,7 +68,10 @@ void Worker::onPause()
         m_vecPageParser[i]->m_isReady = false;
     }
 
-    m_needPause = true;
+    if (m_activeTaskCount == 0)
+        emit workerPaused();
+    else
+        m_needPause = true;
 }
 
 void Worker::onResume()
@@ -86,24 +91,30 @@ void Worker::onResume()
 
 void Worker::onPageParsed(QStringList aNewUrls, QString aCompletedUrl, QString aErrStr, int aMatchNum)
 {
-    if (aErrStr.size())
-        emit listsChanged(aCompletedUrl + " " + aErrStr, -1);
-    else
-        emit listsChanged(aCompletedUrl, aMatchNum);
+    if (!m_history.contains(aCompletedUrl))
+    {
+        m_history << aCompletedUrl;
 
-    m_history << aCompletedUrl;
+        for (int i = 0; i < aNewUrls.size(); ++i)
+        {
+            if (!m_history.contains(aNewUrls[i]))
+                m_queue.push_back(aNewUrls[i]);
+        }
 
-    if (m_history.size() == m_maxLinkNum)
+        if (aErrStr.size())
+            emit listsChanged(aCompletedUrl + " " + aErrStr, -1);
+        else
+            emit listsChanged(aCompletedUrl, aMatchNum);
+    }
+
+    if (m_history.size() >= m_maxLinkNum)
     {
         stopParsing();
         return;
     }
 
-    for (int i = 0; i < aNewUrls.size(); ++i)
-    {
-        if (!m_history.contains(aNewUrls[i]))
-            m_queue << aNewUrls[i];
-    }
+    //if (m_history.contains(aCompletedUrl))
+    //    std::cout << "DUPLICATE.... " << aCompletedUrl.toStdString() << std::endl;
 
     for (int i = 0; i < m_vecThread.size(); ++i)
     {
@@ -111,8 +122,8 @@ void Worker::onPageParsed(QStringList aNewUrls, QString aCompletedUrl, QString a
         {
             if (!m_queue.empty())
             {
-                emit setTaskForThread(i, m_queue.front());
-                m_queue.pop_front();
+                QString taskUrl = m_queue.front(); m_queue.pop_front();
+                emit setTaskForThread(i, taskUrl);
             }
             else
                 break;
@@ -121,7 +132,7 @@ void Worker::onPageParsed(QStringList aNewUrls, QString aCompletedUrl, QString a
 
     if (m_needPause)
     {
-        if (--m_activeTaskCount <= 0)
+        if (--m_activeTaskCount == 0)
         {
             m_needPause = false;
             emit workerPaused();
