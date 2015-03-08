@@ -11,6 +11,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    setWindowTitle("Web Parser");
+
     QObject::connect(ui->processedLinksList->model(), SIGNAL(rowsInserted(const QModelIndex&, int, int)),
                      ui->processedLinksList,          SLOT(scrollToBottom()));
 

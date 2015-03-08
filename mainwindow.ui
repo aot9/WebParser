@@ -284,16 +284,11 @@
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <widget class="QMenuBar" name="menuBar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>955</width>
-     <height>29</height>
-    </rect>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit</string>
    </property>
-  </widget>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
