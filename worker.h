@@ -37,14 +37,11 @@ private:
     QVector<PageParser*> m_vecPageParser;
 
     SharedInfo m_info;
-    //QStringList m_queue;
-    //QSet<QString> m_history;
 
     int m_maxLinkNum;
     int m_activeTaskCount;
-    bool m_needPause;
-    bool m_needStop;
     int m_completed;
+    bool m_needPause;
 };
 
 #endif // WORKER_H

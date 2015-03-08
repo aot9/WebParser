@@ -4,20 +4,18 @@
 #include <QNetworkRequest>
 #include <QNetworkAccessManager>
 #include <QRegExp>
-#include <QStringList>
 #include <QThread>
-#include <iostream>
 
 #define URL_PATTERN "href\\s*=\\s*\"(http://[^\"\' ]*)\""
 
 PageParser::PageParser(uint aId, QString aText, SharedInfo &aInfo) :
     QObject(NULL),
-    m_infoRef(aInfo),
     m_isReady(true),
     m_isPause(false),
     m_pNetManager(NULL),
     m_threadId(aId),
-    m_re(URL_PATTERN"|("+aText+")",  Qt::CaseInsensitive)
+    m_re(URL_PATTERN"|("+aText+")",  Qt::CaseInsensitive),
+    m_infoRef(aInfo)
 {}
 
 void PageParser::processReply(QNetworkReply* aReply)
@@ -42,10 +40,10 @@ void PageParser::processReply(QNetworkReply* aReply)
 
             if (url.size())
             {
-                if (!m_infoRef.isInHistory(url) && !m_infoRef.isInProgress(url))
+                if (!m_infoRef.isInHistory(url))
                 {
                     m_infoRef.addToHistory(url);
-                    m_infoRef.pushToQueue(url);
+                    m_infoRef.enqueue(url);
                 }
             }
             if (tex.size())
