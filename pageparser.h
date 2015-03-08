@@ -3,6 +3,7 @@
 
 #include <QStringList>
 #include <QRegExp>
+#include "sharedinfo.h"
 
 class QNetworkReply;
 class QNetworkAccessManager;
@@ -17,16 +18,16 @@ public:
 
 private:
     QNetworkAccessManager* m_pNetManager;
-    QStringList m_queue;
     uint m_threadId;
     QRegExp m_re;
+    SharedInfo& m_infoRef;
 
 public:
     explicit PageParser(QObject *parent = 0);
-    PageParser(uint aId, QString aText);
+    PageParser(uint aId, QString aText, SharedInfo& aInfo);
 
 signals:
-    void finishedParsing(QStringList, QString, QString, int);
+    void finishedParsing(QString, QString, int);
 
 public slots:
     void processReply(QNetworkReply* reply);

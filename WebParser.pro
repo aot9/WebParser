@@ -13,10 +13,12 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     pageparser.cpp \
-    worker.cpp
+    worker.cpp \
+    sharedinfo.cpp
 
 HEADERS  += mainwindow.h \
     pageparser.h \
-    worker.h
+    worker.h \
+    sharedinfo.h
 
 FORMS    += mainwindow.ui

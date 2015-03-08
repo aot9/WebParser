@@ -6,24 +6,23 @@
 #include <iostream>
 
 Worker::Worker(QObject *parent) :
-    QObject(parent), m_needPause(false)
+    QObject(parent), m_needPause(false), m_needStop(false), m_completed(0)
 {
 }
 
 void Worker::runParsing(QString aUrl, QString aText, int aThreadNum, int aLinkNum)
 {
     m_maxLinkNum = aLinkNum;
-
-    m_queue.clear();
-    m_history.clear();
+    m_completed = 0;
+    m_info.clear();
 
     for (int i = 0; i < aThreadNum; ++i)
     {
         m_vecThread.push_back(new QThread);
-        m_vecPageParser.push_back(new PageParser(i, aText));
+        m_vecPageParser.push_back(new PageParser(i, aText, m_info));
 
-        QObject::connect(m_vecPageParser[i], SIGNAL(finishedParsing(QStringList, QString, QString, int)),
-                         this,             SLOT(onPageParsed(QStringList, QString, QString, int)));
+        QObject::connect(m_vecPageParser[i], SIGNAL(finishedParsing(QString, QString, int)),
+                         this,             SLOT(onPageParsed(QString, QString, int)));
 
         QObject::connect(this,             SIGNAL(setTaskForThread(uint, QString)),
                          m_vecPageParser[i], SLOT(parseUrl(uint, QString)));
@@ -33,6 +32,7 @@ void Worker::runParsing(QString aUrl, QString aText, int aThreadNum, int aLinkNu
         m_vecThread[i]->start();
     }
 
+    m_info.addToProgress(aUrl);
     emit setTaskForThread(0, aUrl);
 }
 
@@ -51,24 +51,20 @@ void Worker::stopParsing()
     m_vecThread.clear();
 
     m_needPause = false;
+    m_needStop = false;
 
     emit workerStopped();
 }
 
 void Worker::onPause()
 {
-    m_activeTaskCount = 0;
-
     for (int i = 0; i < m_vecThread.size(); ++i)
     {
-        if (!m_vecPageParser[i]->m_isReady)
-            ++m_activeTaskCount;
-
         m_vecPageParser[i]->m_isPause = true;
         m_vecPageParser[i]->m_isReady = false;
     }
 
-    if (m_activeTaskCount == 0)
+    if (m_info.getInProgressSize() == 0)
         emit workerPaused();
     else
         m_needPause = true;
@@ -82,34 +78,35 @@ void Worker::onResume()
         m_vecPageParser[i]->m_isReady = true;
     }
 
-    if (!m_queue.empty())
-    {
-        emit setTaskForThread(0, m_queue.front());
-        m_queue.pop_front();
-    }
+    if (!m_info.isQueueEmpty())
+        emit setTaskForThread(0, m_info.getFromQueue());
 }
 
-void Worker::onPageParsed(QStringList aNewUrls, QString aCompletedUrl, QString aErrStr, int aMatchNum)
+void Worker::onPageParsed(QString aCompletedUrl, QString aErrStr, int aMatchNum)
 {
-    if (!m_history.contains(aCompletedUrl))
+    ++m_completed;
+    m_info.removeFromProgress(aCompletedUrl);
+
+    if (aErrStr.size())
+        emit listsChanged(aCompletedUrl + " " + aErrStr, -1);
+    else
+        emit listsChanged(aCompletedUrl, aMatchNum);
+
+    //std::cout << m_info.getInProgressSize() << std::endl;
+    if (m_needPause)
     {
-        m_history << aCompletedUrl;
-
-        for (int i = 0; i < aNewUrls.size(); ++i)
+        if (m_info.getInProgressSize() == 0)
         {
-            if (!m_history.contains(aNewUrls[i]))
-                m_queue.push_back(aNewUrls[i]);
+            m_needPause = false;
+            emit workerPaused();
         }
-
-        if (aErrStr.size())
-            emit listsChanged(aCompletedUrl + " " + aErrStr, -1);
-        else
-            emit listsChanged(aCompletedUrl, aMatchNum);
+        return;
     }
 
-    if (m_history.size() >= m_maxLinkNum)
+    if (m_needStop)
     {
-        stopParsing();
+        if (m_info.getInProgressSize() == 0)
+            stopParsing();
         return;
     }
 
@@ -117,24 +114,26 @@ void Worker::onPageParsed(QStringList aNewUrls, QString aCompletedUrl, QString a
     {
         if (m_vecPageParser[i]->m_isReady)
         {
-            if (!m_queue.empty())
-            {
-                QString taskUrl = m_queue.front(); m_queue.pop_front();
-                emit setTaskForThread(i, taskUrl);
-            }
-            else
+            if (m_info.isQueueEmpty())
                 break;
+            else
+            {
+                if (m_completed + m_info.getInProgressSize() == m_maxLinkNum)
+                {
+                    m_needStop = true;
+                    break;
+                }
+                else
+                {
+                    QString url = m_info.getFromQueue();
+                    emit setTaskForThread(i, url);
+                    m_info.addToProgress(url);
+                }
+                std::cout << m_info.getInProgressSize() << std::endl;
+            }
         }
     }
 
-    if (m_needPause)
-    {
-        if (--m_activeTaskCount == 0)
-        {
-            m_needPause = false;
-            emit workerPaused();
-        }
-    }
 }
 
 
