@@ -14,11 +14,11 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     pageparser.cpp \
     worker.cpp \
-    sharedinfo.cpp
+    linkqueue.cpp
 
 HEADERS  += mainwindow.h \
     pageparser.h \
     worker.h \
-    sharedinfo.h
+    linkqueue.h
 
 FORMS    += mainwindow.ui

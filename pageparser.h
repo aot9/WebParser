@@ -3,7 +3,7 @@
 
 #include <QStringList>
 #include <QRegExp>
-#include "sharedinfo.h"
+#include "linkqueue.h"
 
 class QNetworkReply;
 class QNetworkAccessManager;
@@ -20,11 +20,11 @@ private:
     QNetworkAccessManager* m_pNetManager;
     uint m_threadId;
     QRegExp m_re;
-    SharedInfo& m_infoRef;
+    LinkQueue& m_queueRef;
 
 public:
     explicit PageParser(QObject *parent = 0);
-    PageParser(uint aId, QString aText, SharedInfo& aInfo);
+    PageParser(uint aId, QString aText, LinkQueue& aInfo);
 
 signals:
     void finishedParsing(QString, QString, int);

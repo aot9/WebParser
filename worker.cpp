@@ -10,14 +10,15 @@ Worker::Worker(QObject *parent) :
 
 void Worker::runParsing(QString aUrl, QString aText, int aThreadNum, int aLinkNum)
 {
-    m_maxLinkNum = aLinkNum;
     m_completed = 0;
-    m_info.clear();
+    m_queue.clear();
+
+    m_maxLinkNum = aLinkNum;
 
     for (int i = 0; i < aThreadNum; ++i)
     {
         m_vecThread.push_back(new QThread);
-        m_vecPageParser.push_back(new PageParser(i, aText, m_info));
+        m_vecPageParser.push_back(new PageParser(i, aText, m_queue));
 
         QObject::connect(m_vecPageParser[i], SIGNAL(finishedParsing(QString, QString, int)),
                          this, SLOT(onPageParsed(QString, QString, int)));
@@ -30,8 +31,8 @@ void Worker::runParsing(QString aUrl, QString aText, int aThreadNum, int aLinkNu
         m_vecThread[i]->start();
     }
 
-    m_info.addToHistory(aUrl);
-    emit setTaskForThread(0, aUrl);
+    m_queue.enqueue(aUrl);
+    emit setTaskForThread(0, m_queue.dequeue());
 }
 
 void Worker::stopParsing()
@@ -79,8 +80,8 @@ void Worker::onResume()
         m_vecPageParser[i]->m_isReady = true;
     }
 
-    if (!m_info.isQueueEmpty())
-        emit setTaskForThread(0, m_info.dequeue());
+    if (!m_queue.empty())
+        emit setTaskForThread(0, m_queue.dequeue());
 }
 
 void Worker::onPageParsed(QString aCompletedUrl, QString aErrStr, int aMatchNum)
@@ -112,15 +113,11 @@ void Worker::onPageParsed(QString aCompletedUrl, QString aErrStr, int aMatchNum)
     {
         if (m_vecPageParser[i]->m_isReady)
         {
-            if (m_info.isQueueEmpty())
+            if (m_queue.empty())
                 break;
             else
-            {
-                emit setTaskForThread(i, m_info.dequeue());
-            }
+                emit setTaskForThread(i, m_queue.dequeue());
         }
     }
 
 }
-
-

@@ -8,14 +8,14 @@
 
 #define URL_PATTERN "href\\s*=\\s*\"(http://[^\"\' ]*)\""
 
-PageParser::PageParser(uint aId, QString aText, SharedInfo &aInfo) :
+PageParser::PageParser(uint aId, QString aText, LinkQueue& aInfo) :
     QObject(NULL),
     m_isReady(true),
     m_isPause(false),
     m_pNetManager(NULL),
     m_threadId(aId),
     m_re(URL_PATTERN"|("+aText+")",  Qt::CaseInsensitive),
-    m_infoRef(aInfo)
+    m_queueRef(aInfo)
 {}
 
 void PageParser::processReply(QNetworkReply* aReply)
@@ -39,13 +39,7 @@ void PageParser::processReply(QNetworkReply* aReply)
             QString tex = m_re.cap(2);
 
             if (url.size())
-            {
-                if (!m_infoRef.isInHistory(url))
-                {
-                    m_infoRef.addToHistory(url);
-                    m_infoRef.enqueue(url);
-                }
-            }
+                m_queueRef.enqueue(url);
             if (tex.size())
                 ++matchesFound;
 

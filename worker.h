@@ -7,7 +7,7 @@
 #include <QString>
 #include <QSet>
 
-#include "sharedinfo.h"
+#include "linkqueue.h"
 
 class PageParser;
 class QThread;
@@ -36,7 +36,7 @@ private:
     QVector<QThread*> m_vecThread;
     QVector<PageParser*> m_vecPageParser;
 
-    SharedInfo m_info;
+    LinkQueue m_queue;
 
     int m_maxLinkNum;
     int m_activeTaskCount;
