@@ -1,13 +1,16 @@
 #include <QtGui/QApplication>
 #include <QThread>
+#include <QTextCodec>
 
 #include "mainwindow.h"
-#include <pageparser.h>
+#include "pageparser.h"
 #include "worker.h"
 
 int main(int argc, char *argv[])
 {
+    QTextCodec::setCodecForCStrings(QTextCodec::codecForLocale());
     QApplication a(argc, argv);
+
     MainWindow w;
     w.show();
 
