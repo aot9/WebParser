@@ -37,6 +37,14 @@ void MainWindow::on_startButton_clicked()
 {
     if (ui->startButton->text() == "Start")
     {
+        QString text = ui->textToSearch->text();
+        QString url = ui->startUrl->text();
+        int nt = ui->numThreads->text().toInt();
+        int nl = ui->numLinks->text().toInt();
+
+        if (nt < 1 || nl < 1 || text.size() == 0 || url.size() == 0)
+            return;
+
         ui->textToSearch->setReadOnly(true);
         ui->startUrl->setReadOnly(true);
         ui->numThreads->setReadOnly(true);
@@ -57,7 +65,7 @@ void MainWindow::on_startButton_clicked()
 
         ui->startButton->setText("Pause");
 
-        emit start(ui->startUrl->text(), ui->textToSearch->text(), ui->numThreads->text().toInt(), ui->numLinks->text().toInt());
+        emit start(url, text, nt, nl);
     }
     else if (ui->startButton->text() == "Pause")
     {
