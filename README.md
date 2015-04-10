@@ -1,3 +1,7 @@
+Description
+-------------------------
+This application was developed as home test assigment from employer.
+
 Features
 -------------------------
     * Start/Pause/Resume button
